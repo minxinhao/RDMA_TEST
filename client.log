@@ -14,7 +14,7 @@ sock_port                 = 9999
 
 ************ IB Config ************
 
-	qp[1808] <-> qp[636]
+	qp[1809] <-> qp[637]
 
 ************ End of IB Config ************
 
@@ -22,7 +22,7 @@ sock_port                 = 9999
 ************ Run Client ************
 
 thread[0]: ready to send
-thread[0]: throughput = 34.049073 (MB/s)
+thread[0]: throughput = 56.046664 (MB/s)
 
 ================ Run Finished ================
 
