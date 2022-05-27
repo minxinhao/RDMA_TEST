@@ -155,7 +155,6 @@ int post_read(uint32_t req_size, uint32_t lkey, uint64_t wr_id,
     return ret;
 }
 
-
 int post_srq_recv (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
 		   struct ibv_srq *srq, char *buf)
 {

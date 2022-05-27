@@ -1,7 +1,8 @@
-make --dry-run --always-make --keep-going --print-directory
+make --dry-run --keep-going --print-directory
 make: Entering directory '/home/mxh/RDMA_TEST'
-gcc -O2  -c -o main.o main.c
+gcc -O2  -c -o client_write.o client_write.c
  
+<<<<<<< HEAD
 gcc -O2  -c -o client.o client.c
 gcc -O2  -c -o config.o config.c
 gcc -O2  -c -o ib.o ib.c
@@ -16,6 +17,10 @@ gcc -O2  -c -o client4write.o client4write.c
 gcc -O2  -c -o server4write.o server4write.c
  
 gcc -O2  -o rdma_test main.o client.o config.o ib.o server.o setup_ib.o sock.o client4write.o server4write.o -libverbs -lpthread -lrdmacm -lpmem
+=======
+gcc -O2  -c -o server4write.o server4write.c
+gcc -O2  -o rdma_test main.o config.o ib.o setup_ib.o sock.o client.o server.o client_write.o server4write.o -libverbs -lpthread -lrdmacm -lpmem
+>>>>>>> c08696cec4f27035a0e47aa5d48f630f477def4f
 rm -f *.o
 make: Leaving directory '/home/mxh/RDMA_TEST'
  

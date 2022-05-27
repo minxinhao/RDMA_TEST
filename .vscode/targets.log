@@ -1,5 +1,5 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'main.o', needed by 'rdma_test'.  Stop.
+make: *** No rule to make target 'client_write.o', needed by 'rdma_test'.  Stop.
 
 # GNU Make 4.2.1
 # Built for x86_64-pc-linux-gnu
@@ -221,10 +221,11 @@ all: rdma_test
 #  File has not been updated.
 
 # Not a target:
-client.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+config.o:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-27 13:41:41.492612437
+#  File has been updated.
+#  Successfully updated.
 
 # Not a target:
 client4write.o:
@@ -242,9 +243,10 @@ Makefile:
 
 # Not a target:
 server.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Implicit rule search has been done.
+#  Last modified 2022-05-27 13:41:42.148564571
+#  File has been updated.
+#  Successfully updated.
 
 # makefile (from 'Makefile', line 13)
 debug: CFLAGS = m -g -DDEBUG
@@ -272,9 +274,10 @@ server4write.o:
 
 # Not a target:
 ib.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Implicit rule search has been done.
+#  Last modified 2022-05-27 13:41:41.600604557
+#  File has been updated.
+#  Successfully updated.
 
 # Not a target:
 .DEFAULT:
@@ -302,14 +305,9 @@ rdma_test: main.o client.o config.o ib.o server.o setup_ib.o sock.o client4write
 # Not a target:
 main.o:
 #  Implicit rule search has been done.
-#  File does not exist.
-#  File has not been updated.
-
-# Not a target:
-config.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Last modified 2022-05-27 13:41:41.436616524
+#  File has been updated.
+#  Successfully updated.
 
 # Not a target:
  
@@ -320,9 +318,10 @@ setup_ib.o:
 
 # Not a target:
 sock.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Implicit rule search has been done.
+#  Last modified 2022-05-27 13:41:41.908582084
+#  File has been updated.
+#  Successfully updated.
 
 # files hash-table stats:
 # Load=17/1024=2%, Rehash=0, Collisions=2/42=5%
