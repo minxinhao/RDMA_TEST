@@ -26,3 +26,8 @@ make
 ### ibv_create_cq
 For call of ibv_create_cq, the initial code set the number of cq to max_cq in dev_attr. It will cuase collapse and lead the processing of cq to be very slow.
 Set it to 512 makes the ultimate performance to be approaching to perftest.
+
+### ibv_poll_cq
+
+1. ibv_poll_cq may return with zero cq polled.
+2. Remote Write will also generate wc into server's cq.
