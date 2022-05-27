@@ -8,7 +8,7 @@ make: *** No rule to make target 'main.o', needed by 'rdma_test'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri May 27 06:55:54 2022
+# Make data base, printed on Fri May 27 16:03:41 2022
 
 # Variables
 
@@ -65,7 +65,7 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/mxh
 # environment
-SSH_CONNECTION = 192.168.0.1 59202 192.168.1.11 22
+SSH_CONNECTION = 192.168.0.1 59604 192.168.1.11 22
 # environment
 PATH = /home/mxh/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote-cli:/home/dsb/daos/install/bin/:/home/dsb/daos/install/include/sbin/:/home/dsb/daos/install/bin/:/home/dsb/daos/install/include/sbin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # makefile (from 'Makefile', line 9)
@@ -77,10 +77,11 @@ CPATH = /home/dsb/daos/install/include/:/home/dsb/daos/install/include/:
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/997/vscode-ipc-a13eafda-df40-4dea-aa17-aa25fa926caf.sock
+VSCODE_IPC_HOOK_CLI = /run/user/997/vscode-ipc-bbe15286-b2e0-416b-afcd-7ced107a4b4c.sock
 # makefile (from 'Makefile', line 4)
 LDFLAGS = -libverbs
 # default
+ 
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
 LS_COLORS = 
@@ -113,6 +114,7 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 +F = $(notdir $+)
 # environment
+ 
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
@@ -123,7 +125,7 @@ MAKE = $(MAKE_COMMAND)
 # default
 MAKECMDGOALS := all
 # makefile (from 'Makefile', line 7)
-SRCS = main.c client.c config.c ib.c server.c setup_ib.c sock.c
+SRCS = main.c client.c config.c ib.c server.c setup_ib.c sock.c client4write.c server4write.c
 # environment
 SHLVL = 1
 # environment
@@ -131,7 +133,7 @@ OMPI_MCA_btl_openib_if_include = ibp102s0:1
 # makefile (from 'Makefile', line 1)
 CC = gcc
 # environment
-XDG_SESSION_ID = 103
+XDG_SESSION_ID = 125
 # environment
 USER = mxh
 # makefile
@@ -151,7 +153,7 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 192.168.0.1 59202 22
+SSH_CLIENT = 192.168.0.1 59604 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -160,9 +162,9 @@ BROWSER = /home/mxh/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/
 VSCODE_HANDLES_SIGPIPE = true
 # environment
 DAOS_CONT = io500_cont
- 
 # environment
 OMPI_MCA_btl_openib_allow_ib = 1
+ 
 # default
 MAKEFILES := 
 # automatic
@@ -193,6 +195,7 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 MOTD_SHOWN = pam
 # variable set hash-table stats:
 # Load=89/1024=9%, Rehash=0, Collisions=13/120=11%
+ 
 
 # Pattern-specific Variable Values
 
@@ -200,10 +203,9 @@ MOTD_SHOWN = pam
 
 # Directories
 
- 
-# . (device 64768, inode 4784211): 22 files, no impossibilities.
+# . (device 64768, inode 4539114): 27 files, no impossibilities.
 
-# 22 files, no impossibilities in 1 directories.
+# 27 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -211,6 +213,7 @@ MOTD_SHOWN = pam
 
 # Files
 
+ 
 all: rdma_test
 #  Command line target.
 #  Implicit rule search has been done.
@@ -224,11 +227,17 @@ client.o:
 #  File has not been updated.
 
 # Not a target:
+client4write.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
 Makefile:
-#  Implicit rule search has been done.
-#  Last modified 2022-05-27 02:21:42.867629816
-#  File has been updated.
  
+#  Implicit rule search has been done.
+#  Last modified 2022-05-27 15:38:35.872727826
+#  File has been updated.
 #  Successfully updated.
 
 # Not a target:
@@ -239,6 +248,7 @@ server.o:
 
 # makefile (from 'Makefile', line 13)
 debug: CFLAGS = m -g -DDEBUG
+ 
 debug: rdma_test
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -246,13 +256,19 @@ debug: rdma_test
 # variable set hash-table stats:
 # Load=1/32=3%, Rehash=0, Collisions=0/1=0%
 
+# Not a target:
+server4write.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
 .c.o:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 17):
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
- 
 
 # Not a target:
 ib.o:
@@ -264,6 +280,7 @@ ib.o:
 .DEFAULT:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 
 clean:
@@ -273,11 +290,11 @@ clean:
 #  recipe to execute (from 'Makefile', line 24):
 	$(RM) *.o *~ $(PROG)
 
-rdma_test: main.o client.o config.o ib.o server.o setup_ib.o sock.o
+rdma_test: main.o client.o config.o ib.o server.o setup_ib.o sock.o client4write.o server4write.o
 #  Implicit rule search has not been done.
- 
-#  Last modified 2022-05-27 06:54:12.579115618
+#  Last modified 2022-05-27 15:52:27.542307681
 #  File has not been updated.
+ 
 #  recipe to execute (from 'Makefile', line 20):
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 	$(RM) *.o
@@ -295,10 +312,10 @@ config.o:
 #  File has not been updated.
 
 # Not a target:
+ 
 setup_ib.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 
 # Not a target:
@@ -308,20 +325,21 @@ sock.o:
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=15/1024=1%, Rehash=0, Collisions=2/38=5%
+# Load=17/1024=2%, Rehash=0, Collisions=2/42=5%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
+ 
 # No general ('VPATH' variable) search path.
 
- 
-# strcache buffers: 1 (0) / strings = 37 / storage = 305 B / avg = 8 B
-# current buf: size = 8162 B / used = 305 B / count = 37 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 44 / storage = 403 B / avg = 9 B
+# current buf: size = 8162 B / used = 403 B / count = 44 / avg = 9 B
 
-# strcache performance: lookups = 52 / hit rate = 28%
+# strcache performance: lookups = 59 / hit rate = 25%
 # hash-table stats:
-# Load=37/8192=0%, Rehash=0, Collisions=4/52=8%
-# Finished Make data base on Fri May 27 06:55:54 2022
+# Load=44/8192=1%, Rehash=0, Collisions=4/59=7%
+# Finished Make data base on Fri May 27 16:03:41 2022
+ 
 
  

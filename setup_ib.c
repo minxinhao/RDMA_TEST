@@ -10,6 +10,13 @@
 
 struct IBRes ib_res;
 
+void set_msg(char* buf,int msg_size,int id){
+    buf[msg_size-1]=0;
+    for(int i = 0 ; i < msg_size-1 ; i++){
+        buf[i]='0'+ id;
+    }
+}
+
 int connect_qp_server ()
 {
     int			 ret		= 0, n = 0, i = 0;
@@ -48,6 +55,8 @@ int connect_qp_server ()
 	check (ret == 0, "Failed to send qp_info to client" );
     log_info("local_addr: addr:%lx rkey:%u",local_addr.remote_addr,local_addr.rkey);
     log_info("remote_addr: addr:%lx rkey:%u",remote_addr.remote_addr,remote_addr.rkey);
+    ib_res.rkey = remote_addr.rkey;
+    ib_res.remote_addr = remote_addr.remote_addr;
 
     /* change send QP state to RTS */
     log (LOG_SUB_HEADER, "Start of IB Config");
@@ -114,7 +123,9 @@ int connect_qp_client ()
     
     log_info("local_addr: addr:%lx rkey:%u",local_addr.remote_addr,local_addr.rkey);
     log_info("remote_addr: addr:%lx rkey:%u",remote_addr.remote_addr,remote_addr.rkey);
-  
+    ib_res.rkey = remote_addr.rkey;
+    ib_res.remote_addr = remote_addr.remote_addr;
+
     /* change QP state to RTS */
     /* send qp_info to client */
     int peer_ind = -1;

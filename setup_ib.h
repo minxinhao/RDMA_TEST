@@ -17,12 +17,16 @@ struct IBRes {
     struct ibv_port_attr	 port_attr;
     struct ibv_device_attr	 dev_attr;
 
+    uint32_t	rkey;
+    uint64_t	remote_addr;
 
     char   *ib_buf;
     size_t  ib_buf_size;
 };
 
 extern struct IBRes ib_res;
+
+void set_msg(char* buf,int msg_size,int id);
 
 int  setup_ib ();
 void close_ib_connection ();
