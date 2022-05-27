@@ -1,0 +1,28 @@
+
+================ IB Echo Server ================
+
+
+************ Configuraion ************
+
+is_server                 = false
+msg_size                  = 8
+num_concurr_msgs          = 1000
+sock_port                 = 9999
+
+************ End of Configuraion ************
+
+
+************ IB Config ************
+
+	qp[1808] <-> qp[636]
+
+************ End of IB Config ************
+
+
+************ Run Client ************
+
+thread[0]: ready to send
+thread[0]: throughput = 34.049073 (MB/s)
+
+================ Run Finished ================
+
