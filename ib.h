@@ -13,7 +13,7 @@
 #define IB_SL			0
 #define IB_WR_ID_STOP		0xE000000000000000
 #define SIG_INTERVAL            1000
-#define NUM_WARMING_UP_OPS      100
+#define NUM_WARMING_UP_OPS      1000
 #define TOT_NUM_OPS             10000000
 
 extern uint64_t wr_id_cnt;
@@ -35,8 +35,8 @@ struct QPInfo {
 }__attribute__ ((packed));
 
 struct RemoteAddr {
-    uint32_t	rkey;
     uint64_t	remote_addr;
+    uint32_t	rkey;
 }__attribute__ ((packed));
 
 
@@ -49,6 +49,13 @@ int modify_qp_to_rts (struct ibv_qp *qp, uint32_t qp_num, uint16_t lid);
 
 int post_send (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
 	       uint32_t imm_data, struct ibv_qp *qp, char *buf);
+
+int post_write (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
+	       uint32_t imm_data, uint32_t rkey, uint64_t remote_addr ,struct ibv_qp *qp, char *buf);
+
+int post_read (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
+	       uint32_t imm_data, uint32_t rkey, uint64_t remote_addr ,struct ibv_qp *qp, char *buf);
+
 
 int post_srq_recv (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
 		   struct ibv_srq *srq, char *buf);

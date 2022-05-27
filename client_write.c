@@ -10,7 +10,7 @@
 #include "client.h"
 
 
-void *client_thread_func (void *arg)
+void *client4write_thread_func (void *arg)
 {
     int         ret		 = 0, n = 0, i = 0, j = 0;
     long	thread_id	 = (long) arg;
@@ -53,81 +53,55 @@ void *client_thread_func (void *arg)
     wc = (struct ibv_wc *) calloc (num_wc, sizeof(struct ibv_wc));
     check (wc != NULL, "thread[%ld]: failed to allocate wc.", thread_id);
 
-	for (j = 0; j < num_concurr_msgs; j++) {
-	    ret = post_srq_recv (msg_size, lkey, (uint64_t)buf_ptr, srq, buf_ptr);
-	    buf_offset = (buf_offset + msg_size) % buf_size;
-	    buf_ptr = buf_base + buf_offset;
-	}
-
 
     /* wait for start signal */
     while (start_sending != true) {
-        do {
-            n = ibv_poll_cq (cq, num_wc, wc);
-        } while (n < 1);
-        check (n > 0, "thread[%ld]: failed to poll cq", thread_id);
+        ret = post_srq_recv (msg_size, lkey, (uint64_t)buf_ptr, srq, buf_ptr);
+        ibv_poll_cq (cq, num_wc, wc);
 
-        for (i = 0; i < n; i++) {
-            if (unlikely(wc[i].status != IBV_WC_SUCCESS)) {
-                check (0, "thread[%ld]: failed for opcode:%d failed status: %s",thread_id, wc[i].opcode,ibv_wc_status_str(wc[i].status));
-            }
-
-            if (likely(wc[i].opcode == IBV_WC_RECV)) {
-                /* post a receive */
-                post_srq_recv (msg_size, lkey, wc[i].wr_id, srq, (char *)wc[i].wr_id);
-                
-                if (ntohl(wc[i].imm_data) == MSG_CTL_START) {
-                    start_sending = true;
-                    break;
-                }
-            }
+        if (ntohl(wc[0].imm_data) == MSG_CTL_START) {
+            start_sending = true;
+            break;
+        }else{
+            post_srq_recv (msg_size, lkey, wc[0].wr_id, srq, (char *)wc[0].wr_id);
         }
     }
     log ("thread[%ld]: ready to send", thread_id);
 
-    /* pre-post sends */
     buf_offset = 0;
     debug ("buf_ptr = %"PRIx64"", (uint64_t)buf_ptr);
-	for (j = 0; j < num_concurr_msgs; j++) {
-        wr_id = get_wr_id();
-        // set_msg(buf_ptr,msg_size,wr_id%10);
-	    ret = post_send (msg_size, lkey, wr_id , (uint32_t)i, qp, buf_ptr);
-	    check (ret == 0, "thread[%ld]: failed to post send", thread_id);
-	    buf_offset = (buf_offset + msg_size) % buf_size;
-	    buf_ptr = buf_base + buf_offset;
-	}
-
+	
     num_acked_peers = 0;
     while (stop != true) {
-        /* poll cq */
-        n = ibv_poll_cq (cq, num_wc, wc);
-        if (n < 0) {
-            check (0, "thread[%ld]: Failed to poll cq", thread_id);
+        for (j = 0; j < num_concurr_msgs; j++) {
+            wr_id = get_wr_id();
+            // set_msg(buf_ptr,msg_size,wr_id%10);
+            ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
+            // ret = post_send(msg_size,lkey,wr_id,(uint32_t)wr_id,qp,buf_ptr);
+            check (ret == 0, "thread[%ld]: failed to post write", thread_id);
+            buf_offset = (buf_offset + msg_size) % buf_size;
+            buf_ptr = buf_base + buf_offset;
         }
 
+
+        /* poll cq */
+        n = ibv_poll_cq (cq, num_wc, wc);
+
         for (i = 0; i < n; i++) {
-            // if (unlikely(wc[i].status != IBV_WC_SUCCESS)) {
-            //     check (0, "thread[%ld]: failed for opcode:%d failed status: %s",thread_id, wc[i].opcode,ibv_wc_status_str(wc[i].status));
-            // }
             if(unlikely(++ops_count>=TOT_NUM_OPS)){
                 gettimeofday (&end, NULL);
                 stop = true;
                 break;
             }
             
-            // if(unlikely(ops_count % 100000 == 0)) log_message("run send %ld",ops_count);
+            if(unlikely(ops_count % 100000 == 0)) log_message("run write %ld",ops_count);
 
             debug ("ops_count = %ld", ops_count);
             if (unlikely(ops_count == NUM_WARMING_UP_OPS)) gettimeofday (&start, NULL);
 
-            // if (unlikely(imm_data == MSG_CTL_STOP)) {
-            //     // gettimeofday (&end, NULL);
-            //     stop = true;
-            //     break;
-            // }  
             wr_id = get_wr_id();
             // set_msg(buf_ptr,msg_size,wr_id%10);
-            post_send (msg_size, lkey, wr_id, wr_id, qp, buf_ptr);
+            ret = post_write (msg_size, lkey, wr_id , (uint32_t)i, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
             buf_offset = (buf_offset + msg_size) % buf_size;
             buf_ptr = buf_base + buf_offset;
             
@@ -154,7 +128,7 @@ void *client_thread_func (void *arg)
     pthread_exit ((void *)-1);
 }
 
-int run_client ()
+int run_client_write ()
 {
     int		ret	    = 0;
     long	num_threads = 1;
@@ -175,7 +149,7 @@ int run_client ()
 
     for (i = 0; i < num_threads; i++) {
 	ret = pthread_create (&client_threads[i], &attr, 
-			      client_thread_func, (void *)i);
+			      client4write_thread_func, (void *)i);
 	check (ret == 0, "Failed to create client_thread[%ld]", i);
     }
 

@@ -103,6 +103,58 @@ int post_send (uint32_t req_size, uint32_t lkey, uint64_t wr_id,
     return ret;
 }
 
+int post_write (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
+	       uint32_t imm_data, uint32_t rkey, uint64_t remote_addr ,struct ibv_qp *qp, char *buf){
+    int ret = 0;
+    struct ibv_send_wr *bad_send_wr;
+
+    struct ibv_sge list = {
+	.addr   = (uintptr_t) buf,
+	.length = req_size,
+	.lkey   = lkey
+    };
+
+    struct ibv_send_wr send_wr = {
+	.wr_id      = wr_id,
+	.sg_list    = &list,
+	.num_sge    = 1,
+	.opcode     = IBV_WR_SEND_WITH_IMM,
+	.send_flags = IBV_SEND_SIGNALED,
+	.imm_data   = htonl (imm_data),
+    };
+	// send_wr.wr.rdma.rkey = rkey;
+	// send_wr.wr.rdma.remote_addr = remote_addr;
+
+    ret = ibv_post_send (qp, &send_wr, &bad_send_wr);
+    return ret;
+}
+
+int post_read(uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
+	       uint32_t imm_data, uint32_t rkey, uint64_t remote_addr ,struct ibv_qp *qp, char *buf){
+    int ret = 0;
+    struct ibv_send_wr *bad_send_wr;
+
+    struct ibv_sge list = {
+	.addr   = (uintptr_t) buf,
+	.length = req_size,
+	.lkey   = lkey
+    };
+
+    struct ibv_send_wr send_wr = {
+	.wr_id      = wr_id,
+	.sg_list    = &list,
+	.num_sge    = 1,
+	.opcode     = IBV_WR_RDMA_READ,
+	.send_flags = IBV_SEND_SIGNALED,
+	.imm_data   = htonl (imm_data),
+    };
+	send_wr.wr.rdma.rkey = rkey;
+	send_wr.wr.rdma.remote_addr = remote_addr;
+
+    ret = ibv_post_send (qp, &send_wr, &bad_send_wr);
+    return ret;
+}
+
 int post_srq_recv (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
 		   struct ibv_srq *srq, char *buf)
 {
