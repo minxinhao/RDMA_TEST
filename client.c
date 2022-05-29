@@ -43,11 +43,11 @@ void *client_thread_func (void *arg)
     double              throughput	= 0.0;
 
     /* set thread affinity */
-    CPU_ZERO (&cpuset);
-    CPU_SET  ((int)thread_id, &cpuset);
-    self = pthread_self ();
-    ret  = pthread_setaffinity_np (self, sizeof(cpu_set_t), &cpuset);
-    check (ret == 0, "thread[%ld]: failed to set thread affinity", thread_id);
+    // CPU_ZERO (&cpuset);
+    // CPU_SET  ((int)thread_id, &cpuset);
+    // self = pthread_self ();
+    // ret  = pthread_setaffinity_np (self, sizeof(cpu_set_t), &cpuset);
+    // check (ret == 0, "thread[%ld]: failed to set thread affinity", thread_id);
 
     /* pre-post recvs */    
     wc = (struct ibv_wc *) calloc (num_wc, sizeof(struct ibv_wc));
@@ -99,8 +99,7 @@ void *client_thread_func (void *arg)
                 break;
             }
             
-            if(unlikely(ops_count % 100000 == 0)) log_message("run send %ld",ops_count);
-
+            // if(unlikely(ops_count % 100000 == 0)) log_message("run send %ld",ops_count);
             if (unlikely(ops_count == NUM_WARMING_UP_OPS)) gettimeofday (&start, NULL);
 
             wr_id = get_wr_id();

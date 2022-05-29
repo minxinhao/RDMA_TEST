@@ -45,11 +45,11 @@ void *server4write_thread (void *arg)
     check (wc != NULL, "thread[%ld]: failed to allocate wc.", thread_id);
 
     /* set thread affinity */
-    CPU_ZERO (&cpuset);
-    CPU_SET  ((int)thread_id, &cpuset);
-    self = pthread_self ();
-    ret  = pthread_setaffinity_np (self, sizeof(cpu_set_t), &cpuset);
-    check (ret == 0, "thread[%ld]: failed to set thread affinity", thread_id);
+    // CPU_ZERO (&cpuset);
+    // CPU_SET  ((int)thread_id, &cpuset);
+    // self = pthread_self ();
+    // ret  = pthread_setaffinity_np (self, sizeof(cpu_set_t), &cpuset);
+    // check (ret == 0, "thread[%ld]: failed to set thread affinity", thread_id);
 
     /* pre-post recvs */
     wc = (struct ibv_wc *) calloc (num_wc, sizeof(struct ibv_wc));

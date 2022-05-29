@@ -43,11 +43,11 @@ void *client4write_thread_func (void *arg)
     double              throughput	= 0.0;
 
     /* set thread affinity */
-    CPU_ZERO (&cpuset);
-    CPU_SET  ((int)thread_id, &cpuset);
-    self = pthread_self ();
-    ret  = pthread_setaffinity_np (self, sizeof(cpu_set_t), &cpuset);
-    check (ret == 0, "thread[%ld]: failed to set thread affinity", thread_id);
+    // CPU_ZERO (&cpuset);
+    // CPU_SET  ((int)thread_id, &cpuset);
+    // self = pthread_self ();
+    // ret  = pthread_setaffinity_np (self, sizeof(cpu_set_t), &cpuset);
+    // check (ret == 0, "thread[%ld]: failed to set thread affinity", thread_id);
 
     /* pre-post recvs for start */    
     wc = (struct ibv_wc *) calloc (num_wc, sizeof(struct ibv_wc));
@@ -67,7 +67,6 @@ void *client4write_thread_func (void *arg)
 	for (j = 0; j < num_concurr_msgs; j++) {
         wr_id = get_wr_id();
         // set_msg(buf_ptr,msg_size,wr_id%10);
-	    // ret = post_send (msg_size, lkey, wr_id , (uint32_t)i, qp, buf_ptr);
         ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
 	    check (ret == 0, "thread[%ld]: failed to post write", thread_id);
 	    buf_offset = (buf_offset + msg_size) % buf_size;
@@ -84,16 +83,13 @@ void *client4write_thread_func (void *arg)
                 break;
             }
             
-            if(unlikely(ops_count % 100000 == 0)) log_message("run write %ld",ops_count);
-
-            debug ("ops_count = %ld", ops_count);
+            // if(unlikely(ops_count % 100000 == 0)) log_message("run write %ld",ops_count);
             if (unlikely(ops_count == NUM_WARMING_UP_OPS)) gettimeofday (&start, NULL);
 
             wr_id = get_wr_id();
             // set_msg(buf_ptr,msg_size,wr_id%10);
-            // post_send (msg_size, lkey, wr_id, wr_id, qp, buf_ptr);
             ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
-            check(ret==0,"Client send error");
+            // check(ret==0,"Client send error");
             buf_offset = (buf_offset + msg_size) % buf_size;
             buf_ptr = buf_base + buf_offset;
             

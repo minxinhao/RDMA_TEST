@@ -118,7 +118,7 @@ int post_write (uint32_t req_size, uint32_t lkey, uint64_t wr_id,
 	.wr_id      = wr_id,
 	.sg_list    = &list,
 	.num_sge    = 1,
-	.opcode     = IBV_WR_RDMA_WRITE_WITH_IMM,
+	.opcode     = IBV_WR_RDMA_WRITE,
 	.send_flags = IBV_SEND_SIGNALED,
 	.imm_data   = htonl (imm_data),
     };
@@ -155,10 +155,6 @@ int post_read(uint32_t req_size, uint32_t lkey, uint64_t wr_id,
     return ret;
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 317549e3852d0b98b806903b89eb7688fbc55956
 int post_srq_recv (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
 		   struct ibv_srq *srq, char *buf)
 {
