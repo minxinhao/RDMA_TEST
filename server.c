@@ -45,11 +45,11 @@ void *server_thread (void *arg)
     check (wc != NULL, "thread[%ld]: failed to allocate wc.", thread_id);
 
     /* set thread affinity */
-    CPU_ZERO (&cpuset);
-    CPU_SET  ((int)thread_id, &cpuset);
-    self = pthread_self ();
-    ret  = pthread_setaffinity_np (self, sizeof(cpu_set_t), &cpuset);
-    check (ret == 0, "thread[%ld]: failed to set thread affinity", thread_id);
+    // CPU_ZERO (&cpuset);
+    // CPU_SET  ((int)thread_id, &cpuset);
+    // self = pthread_self ();
+    // ret  = pthread_setaffinity_np (self, sizeof(cpu_set_t), &cpuset);
+    // check (ret == 0, "thread[%ld]: failed to set thread affinity", thread_id);
 
     /* pre-post recvs */
     wc = (struct ibv_wc *) calloc (num_wc, sizeof(struct ibv_wc));
@@ -78,17 +78,17 @@ void *server_thread (void *arg)
             // if (unlikely(wc[i].status != IBV_WC_SUCCESS)) {
             //     check (0, "thread[%ld]: failed for opcode:%d failed status: %s",thread_id, wc[i].opcode,ibv_wc_status_str(wc[i].status));
             // }
-                if(unlikely(++ops_count>=TOT_NUM_OPS)){
-                    stop=true;
-                    break;
-                }
-                /* post a new receive */
-                // buf_pos = ( (wc[i].wr_id-1)*msg_size ) %  buf_size;
-                // log_message("Recv:%s",&buf_base[buf_pos]);
-                wr_id = get_wr_id();
-                buf_pos = ( (wr_id-1)*msg_size ) %  buf_size;
-                ret = post_srq_recv (msg_size, lkey, wr_id, srq, &buf_ptr[buf_pos]);
-                // check(ret==0,"server post recv error");
+            if(unlikely(++ops_count>=TOT_NUM_OPS)){
+                stop=true;
+                break;
+            }
+            /* post a new receive */
+            // buf_pos = ( (wc[i].wr_id-1)*msg_size ) %  buf_size;
+            // log_message("Recv:%s",&buf_base[buf_pos]);
+            wr_id = get_wr_id();
+            buf_pos = ( (wr_id-1)*msg_size ) %  buf_size;
+            ret = post_srq_recv (msg_size, lkey, wr_id, srq, &buf_ptr[buf_pos]);
+            // check(ret==0,"server post recv error");
         }
     }
 
