@@ -7,14 +7,14 @@
 is_server                 = false
 msg_size                  = 8
 num_concurr_msgs          = 1000
-sock_port                 = 9999
+sock_port                 = 3333
 
 ************ End of Configuraion ************
 
 
 ************ IB Config ************
 
-	qp[1808] <-> qp[636]
+	qp[5652] <-> qp[5651]
 
 ************ End of IB Config ************
 
@@ -22,7 +22,3 @@ sock_port                 = 9999
 ************ Run Client ************
 
 thread[0]: ready to send
-thread[0]: throughput = 34.049073 (MB/s)
-
-================ Run Finished ================
-

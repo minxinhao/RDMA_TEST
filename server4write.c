@@ -7,9 +7,9 @@
 #include "ib.h"
 #include "setup_ib.h"
 #include "config.h"
-#include "server.h"
+#include "server4write.h"
 
-void *server_thread (void *arg)
+void *server4write_thread (void *arg)
 {
     int         ret		 = 0, i = 0, j = 0, n = 0;
     long        thread_id	 = (long) arg;
@@ -55,43 +55,28 @@ void *server_thread (void *arg)
     wc = (struct ibv_wc *) calloc (num_wc, sizeof(struct ibv_wc));
     check (wc != NULL, "thread[%ld]: failed to allocate wc.", thread_id);
 
-    for (j = 0; j < num_concurr_msgs; j++) {
-        ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
-        check(ret==0,"server post recv error");
-        buf_offset = (buf_offset + msg_size) % buf_size;
-        buf_ptr = buf_base + buf_offset;
-    }
-
 
     /* signal the client to start */
-    ret = post_send (0, lkey, 0, MSG_CTL_START, qp, buf_base); //set wr_id to 0 for start send wr
+    ret = post_send (0, lkey, 0, MSG_CTL_START, qp, buf_base); 
     check (ret == 0, "thread[%ld]: failed to signal the client to start", thread_id);
-
-    while (stop != true) {
-        /* poll cq */
-        n = ibv_poll_cq (cq, num_wc, wc);
-        if (n < 0) {
-            check (0, "thread[%ld]: Failed to poll cq", thread_id);
-        }
-
-        for (i = 0; i < n; i++) {
-            // if (unlikely(wc[i].status != IBV_WC_SUCCESS)) {
-            //     check (0, "thread[%ld]: failed for opcode:%d failed status: %s",thread_id, wc[i].opcode,ibv_wc_status_str(wc[i].status));
-            // }
-                if(unlikely(++ops_count>=TOT_NUM_OPS)){
-                    stop=true;
-                    break;
-                }
-                /* post a new receive */
-                // buf_pos = ( (wc[i].wr_id-1)*msg_size ) %  buf_size;
-                // log_message("Recv:%s",&buf_base[buf_pos]);
-                wr_id = get_wr_id();
-                buf_pos = ( (wr_id-1)*msg_size ) %  buf_size;
-                ret = post_srq_recv (msg_size, lkey, wr_id, srq, &buf_ptr[buf_pos]);
-                // check(ret==0,"server post recv error");
-        }
+    while ((n = ibv_poll_cq (cq, num_wc, wc))==0){
+        // log_message("poll empty cq for send start");
     }
 
+    // wait for client to end
+    post_srq_recv (msg_size, lkey, wr_id, srq, buf_ptr);
+    stop = false;
+    while (!stop){
+        n = ibv_poll_cq (cq, num_wc, wc);
+        for(i = 0 ; i < n ; i++){
+            if(ntohl(wc[i].imm_data)==MSG_CTL_STOP){
+                stop=true;
+                break;
+            }
+            post_srq_recv (msg_size, lkey, wr_id, srq, buf_ptr);
+        }
+    }
+    // check(ntohl(wc[0].imm_data)==MSG_CTL_STOP,"Expect to recv stop from client");
     
     /* dump statistics */
     // duration   = (double)((end.tv_sec - start.tv_sec) * 1000000 +
@@ -109,7 +94,7 @@ void *server_thread (void *arg)
     pthread_exit ((void *)-1);
 }
 
-int run_server ()
+int run_server4write ()
 {
     int   ret         = 0;
     long  num_threads = 1;
@@ -126,7 +111,7 @@ int run_server ()
     check (threads != NULL, "Failed to allocate threads.");
 
     for (i = 0; i < num_threads; i++) {
-        ret = pthread_create (&threads[i], &attr, server_thread, (void *)i);
+        ret = pthread_create (&threads[i], &attr, server4write_thread, (void *)i);
         check (ret == 0, "Failed to create server_thread[%ld]", i);
     }
 

@@ -50,6 +50,12 @@ int modify_qp_to_rts (struct ibv_qp *qp, uint32_t qp_num, uint16_t lid);
 int post_send (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
 	       uint32_t imm_data, struct ibv_qp *qp, char *buf);
 
+int post_write (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
+	       uint32_t imm_data, uint32_t rkey, uint64_t remote_addr ,struct ibv_qp *qp, char *buf);
+
+int post_read (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
+	       uint32_t imm_data, uint32_t rkey, uint64_t remote_addr ,struct ibv_qp *qp, char *buf);
+
 int post_srq_recv (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
 		   struct ibv_srq *srq, char *buf);
 
