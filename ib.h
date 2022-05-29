@@ -13,7 +13,7 @@
 #define IB_SL			0
 #define IB_WR_ID_STOP		0xE000000000000000
 #define SIG_INTERVAL            1000
-#define NUM_WARMING_UP_OPS      100
+#define NUM_WARMING_UP_OPS      1000
 #define TOT_NUM_OPS             10000000
 
 extern uint64_t wr_id_cnt;
@@ -35,8 +35,8 @@ struct QPInfo {
 }__attribute__ ((packed));
 
 struct RemoteAddr {
-    uint32_t	rkey;
     uint64_t	remote_addr;
+    uint32_t	rkey;
 }__attribute__ ((packed));
 
 

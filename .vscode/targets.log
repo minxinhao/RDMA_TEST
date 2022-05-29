@@ -79,6 +79,7 @@ VSCODE_IPC_HOOK_CLI = /run/user/997/vscode-ipc-5ad1f403-ca89-47de-a3c3-414e37a45
 # makefile (from 'Makefile', line 4)
 LDFLAGS = -libverbs
 # default
+ 
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
 LS_COLORS = 
@@ -111,6 +112,7 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 +F = $(notdir $+)
 # environment
+ 
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
@@ -164,6 +166,7 @@ VSCODE_HANDLES_SIGPIPE = true
 DAOS_CONT = io500_cont
 # environment
 OMPI_MCA_btl_openib_allow_ib = 1
+ 
 # default
 MAKEFILES := 
 # automatic
@@ -211,6 +214,7 @@ MOTD_SHOWN = pam
 
 # Files
 
+ 
 all: rdma_test
 #  Command line target.
 #  Implicit rule search has been done.
@@ -218,7 +222,14 @@ all: rdma_test
 #  File has not been updated.
 
 # Not a target:
-client.o:
+config.o:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-27 13:41:41.492612437
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+client4write.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -231,6 +242,7 @@ client4write.o:
 
 # Not a target:
 Makefile:
+ 
 #  Implicit rule search has been done.
 #  Last modified 2022-05-27 15:38:35.872727826
 #  File has been updated.
@@ -238,12 +250,14 @@ Makefile:
 
 # Not a target:
 server.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Implicit rule search has been done.
+#  Last modified 2022-05-27 13:41:42.148564571
+#  File has been updated.
+#  Successfully updated.
 
 # makefile (from 'Makefile', line 13)
 debug: CFLAGS = m -g -DDEBUG
+ 
 debug: rdma_test
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -258,6 +272,7 @@ server4write.o:
 #  File has not been updated.
 
 .c.o:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -266,14 +281,16 @@ server4write.o:
 
 # Not a target:
 ib.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Implicit rule search has been done.
+#  Last modified 2022-05-27 13:41:41.600604557
+#  File has been updated.
+#  Successfully updated.
 
 # Not a target:
 .DEFAULT:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 
 clean:
@@ -290,6 +307,7 @@ rdma_test: main.o client.o config.o ib.o server.o setup_ib.o sock.o client4write
 #  Implicit rule search has not been done.
 #  Last modified 2022-05-27 16:44:56.901486261
 #  File has not been updated.
+ 
 #  recipe to execute (from 'Makefile', line 20):
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 	$(RM) *.o
@@ -297,16 +315,12 @@ rdma_test: main.o client.o config.o ib.o server.o setup_ib.o sock.o client4write
 # Not a target:
 main.o:
 #  Implicit rule search has been done.
-#  File does not exist.
-#  File has not been updated.
+#  Last modified 2022-05-27 13:41:41.436616524
+#  File has been updated.
+#  Successfully updated.
 
 # Not a target:
-config.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
+ 
 setup_ib.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -314,9 +328,10 @@ setup_ib.o:
 
 # Not a target:
 sock.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Implicit rule search has been done.
+#  Last modified 2022-05-27 13:41:41.908582084
+#  File has been updated.
+#  Successfully updated.
 
 # files hash-table stats:
 # Load=17/1024=2%, Rehash=0, Collisions=2/42=5%
@@ -324,6 +339,7 @@ sock.o:
 
 # No 'vpath' search paths.
 
+ 
 # No general ('VPATH' variable) search path.
 
 # strcache buffers: 1 (0) / strings = 45 / storage = 417 B / avg = 9 B
