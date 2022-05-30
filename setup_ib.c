@@ -124,8 +124,10 @@ int connect_qp_client ()
     
     log_info("local_addr: addr:%lx rkey:%u",local_addr.remote_addr,local_addr.rkey);
     log_info("remote_addr: addr:%lx rkey:%u",remote_addr.remote_addr,remote_addr.rkey);
-    ib_res.rkey = remote_addr.rkey;
-    ib_res.remote_addr = remote_addr.remote_addr;
+    // ib_res.rkey = remote_addr.rkey;
+    // ib_res.remote_addr = remote_addr.remote_addr;
+    ib_res.rkey = local_addr.rkey;
+    ib_res.remote_addr = local_addr.remote_addr;
 
     /* change QP state to RTS */
     /* send qp_info to client */

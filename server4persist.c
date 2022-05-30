@@ -47,47 +47,47 @@ void *server4persist_thread (void *arg)
     
 
     /* signal the client to start */
-    ret = post_send (0, lkey, 0, MSG_CTL_START, qp, buf_base); //set wr_id to 0 for start send wr
-    check (ret == 0, "thread[%ld]: failed to signal the client to start", thread_id);
-    while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
+    // ret = post_send (0, lkey, 0, MSG_CTL_START, qp, buf_base); //set wr_id to 0 for start send wr
+    // check (ret == 0, "thread[%ld]: failed to signal the client to start", thread_id);
+    // while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
     
 
     //post recv for complete flag
-    ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
-    check(ret==0,"server post recv error");
+    // ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
+    // check(ret==0,"server post recv error");
 
-    while (!stop){
-        // log_message("poll empty cq for recv start");
-        n=ibv_poll_cq (cq, num_wc, wc);
+    // while (!stop){
+    //     // log_message("poll empty cq for recv start");
+    //     n=ibv_poll_cq (cq, num_wc, wc);
         
-        for(i = 0 ; i < n ; i++){
-            if(wc[i].opcode == IBV_WC_RECV){
-                check(ntohl(wc[i].imm_data) == MSG_CTL_STOP,"Expect to recv stop flag");
-                printf("The value read from buf is: str_len:%ld content:%s\n",strlen(buf_ptr),buf_ptr);
-                stop = true;
-                break;
-            }
-        }
-    }
+    //     for(i = 0 ; i < n ; i++){
+    //         if(wc[i].opcode == IBV_WC_RECV){
+    //             check(ntohl(wc[i].imm_data) == MSG_CTL_STOP,"Expect to recv stop flag");
+    //             // printf("The value read from buf is: str_len:%ld content:%s\n",strlen(buf_ptr),buf_ptr);
+    //             stop = true;
+    //             break;
+    //         }
+    //     }
+    // }
 
     //post recv for complete flag
-    ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
-    check(ret==0,"server post recv error");
+    // ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
+    // check(ret==0,"server post recv error");
     
-    stop = false;
-    while (!stop){
-        // log_message("poll empty cq for recv start");
-        n=ibv_poll_cq (cq, num_wc, wc);
+    // stop = false;
+    // while (!stop){
+    //     // log_message("poll empty cq for recv start");
+    //     n=ibv_poll_cq (cq, num_wc, wc);
         
-        for(i = 0 ; i < n ; i++){
-            if(wc[i].opcode == IBV_WC_RECV){
-                check(ntohl(wc[i].imm_data) == MSG_CTL_STOP,"Expect to recv stop flag");
-                printf("The value read from buf is: str_len:%ld content:%s\n",strlen(buf_ptr),buf_ptr);
-                stop = true;
-                break;
-            }
-        }
-    }
+    //     for(i = 0 ; i < n ; i++){
+    //         if(wc[i].opcode == IBV_WC_RECV){
+    //             check(ntohl(wc[i].imm_data) == MSG_CTL_STOP,"Expect to recv stop flag");
+    //             printf("The value read from buf is: str_len:%ld content:%s\n",strlen(buf_ptr),buf_ptr);
+    //             stop = true;
+    //             break;
+    //         }
+    //     }
+    // }
 
     
     /* dump statistics */

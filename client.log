@@ -14,14 +14,13 @@ sock_port                 = 9999
 
 ************ IB Config ************
 
-	qp[5728] <-> qp[5727]
+	qp[5737] <-> qp[5736]
 
 ************ End of IB Config ************
 
 
 ************ Run Client ************
 
-thread[0]: ready to send
 thread[0]: throughput = -nan (MB/s)
 
 ================ Run Finished ================
