@@ -8,6 +8,8 @@
 #include "server.h"
 #include "client4write.h"
 #include "server4write.h"
+#include "client4persist.h"
+#include "server4persist.h"
 
 FILE	*log_fp	     = NULL;
 
@@ -35,11 +37,13 @@ int main (int argc, char *argv[])
     check (ret == 0, "Failed to setup IB");
 
     if (config_info.is_server) {
-        ret = run_server ();
+        // ret = run_server ();
         // ret = run_server4write ();
+        ret = run_server4persist ();
     } else {
-        ret = run_client ();
+        // ret = run_client ();
         // ret = run_client4write ();
+        ret = run_client4persist ();
     }
     check (ret == 0, "Failed to run workload");
 

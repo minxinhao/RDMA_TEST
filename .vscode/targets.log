@@ -1,4 +1,6 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'client4persist.o', needed by 'rdma_test'.  Stop.
+
 # GNU Make 4.2.1
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
@@ -6,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun May 29 06:31:52 2022
+# Make data base, printed on Mon May 30 02:04:22 2022
 
 # Variables
 
@@ -63,7 +65,7 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/mxh
 # environment
-SSH_CONNECTION = 192.168.0.1 33806 192.168.1.11 22
+SSH_CONNECTION = 192.168.0.1 38578 192.168.1.11 22
 # environment
 PATH = /home/mxh/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote-cli:/home/dsb/daos/install/bin/:/home/dsb/daos/install/include/sbin/:/home/dsb/daos/install/bin/:/home/dsb/daos/install/include/sbin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # makefile (from 'Makefile', line 9)
@@ -75,11 +77,10 @@ CPATH = /home/dsb/daos/install/include/:/home/dsb/daos/install/include/:
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/997/vscode-ipc-5ad1f403-ca89-47de-a3c3-414e37a4530a.sock
+VSCODE_IPC_HOOK_CLI = /run/user/997/vscode-ipc-4c310536-8679-4bc6-92f3-4bce1b1e0f7e.sock
 # makefile (from 'Makefile', line 4)
 LDFLAGS = -libverbs
 # default
- 
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
 LS_COLORS = 
@@ -112,8 +113,8 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 +F = $(notdir $+)
 # environment
- 
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+ 
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
@@ -123,7 +124,7 @@ MAKE = $(MAKE_COMMAND)
 # default
 MAKECMDGOALS := all
 # makefile (from 'Makefile', line 7)
-SRCS = main.c client.c config.c ib.c server.c setup_ib.c sock.c client4write.c server4write.c
+SRCS = main.c client.c config.c ib.c server.c setup_ib.c sock.c client4write.c server4write.c client4persist.c server4persist.c
 # environment
 SHLVL = 1
 # environment
@@ -131,7 +132,7 @@ OMPI_MCA_btl_openib_if_include = ibp102s0:1
 # makefile (from 'Makefile', line 1)
 CC = gcc
 # environment
-XDG_SESSION_ID = 204
+XDG_SESSION_ID = 246
 # environment
 USER = mxh
 # makefile
@@ -146,16 +147,12 @@ MAKE_COMMAND := make
 .VARIABLES := 
 # automatic
 *F = $(notdir $*)
-# environment
-LC_TERMINAL = iTerm2
 # makefile
 MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 192.168.0.1 33806 22
-# environment
-LC_TERMINAL_VERSION = 3.4.12
+SSH_CLIENT = 192.168.0.1 38578 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -166,7 +163,6 @@ VSCODE_HANDLES_SIGPIPE = true
 DAOS_CONT = io500_cont
 # environment
 OMPI_MCA_btl_openib_allow_ib = 1
- 
 # default
 MAKEFILES := 
 # automatic
@@ -196,7 +192,7 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 MOTD_SHOWN = pam
 # variable set hash-table stats:
-# Load=91/1024=9%, Rehash=0, Collisions=13/122=11%
+# Load=89/1024=9%, Rehash=0, Collisions=13/120=11%
 
 # Pattern-specific Variable Values
 
@@ -204,9 +200,9 @@ MOTD_SHOWN = pam
 
 # Directories
 
-# . (device 64768, inode 4539114): 28 files, no impossibilities.
+# . (device 64768, inode 4514505): 40 files, no impossibilities.
 
-# 28 files, no impossibilities in 1 directories.
+# 40 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -214,7 +210,12 @@ MOTD_SHOWN = pam
 
 # Files
 
- 
+# Not a target:
+server4persist.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
 all: rdma_test
 #  Command line target.
 #  Implicit rule search has been done.
@@ -222,42 +223,36 @@ all: rdma_test
 #  File has not been updated.
 
 # Not a target:
-config.o:
+client.o:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-27 13:41:41.492612437
+#  Last modified 2022-05-30 02:02:43.312419572
 #  File has been updated.
 #  Successfully updated.
 
 # Not a target:
 client4write.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-client4write.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Implicit rule search has been done.
+#  Last modified 2022-05-30 02:02:43.976384578
+#  File has been updated.
+#  Successfully updated.
 
 # Not a target:
 Makefile:
- 
 #  Implicit rule search has been done.
-#  Last modified 2022-05-27 15:38:35.872727826
+#  Last modified 2022-05-30 02:04:14.203630682
 #  File has been updated.
 #  Successfully updated.
 
 # Not a target:
 server.o:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-27 13:41:42.148564571
+ 
+#  Last modified 2022-05-30 02:02:43.544407345
 #  File has been updated.
 #  Successfully updated.
 
 # makefile (from 'Makefile', line 13)
 debug: CFLAGS = m -g -DDEBUG
- 
 debug: rdma_test
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -267,12 +262,12 @@ debug: rdma_test
 
 # Not a target:
 server4write.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Implicit rule search has been done.
+#  Last modified 2022-05-30 02:02:44.048380784
+#  File has been updated.
+#  Successfully updated.
 
 .c.o:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -282,7 +277,7 @@ server4write.o:
 # Not a target:
 ib.o:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-27 13:41:41.600604557
+#  Last modified 2022-05-30 02:02:43.428413458
 #  File has been updated.
 #  Successfully updated.
 
@@ -290,24 +285,19 @@ ib.o:
 .DEFAULT:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 
 clean:
 #  Implicit rule search has not been done.
- 
-make: *** No rule to make target 'main.o', needed by 'rdma_test'.  Stop.
-
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 24):
 	$(RM) *.o *~ $(PROG)
 
-rdma_test: main.o client.o config.o ib.o server.o setup_ib.o sock.o client4write.o server4write.o
+rdma_test: main.o client.o config.o ib.o server.o setup_ib.o sock.o client4write.o server4write.o client4persist.o server4persist.o
 #  Implicit rule search has not been done.
-#  Last modified 2022-05-27 16:44:56.901486261
+#  File does not exist.
 #  File has not been updated.
- 
 #  recipe to execute (from 'Makefile', line 20):
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 	$(RM) *.o
@@ -315,39 +305,52 @@ rdma_test: main.o client.o config.o ib.o server.o setup_ib.o sock.o client4write
 # Not a target:
 main.o:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-27 13:41:41.436616524
+#  Last modified 2022-05-30 02:03:05.803234309
 #  File has been updated.
 #  Successfully updated.
 
 # Not a target:
- 
-setup_ib.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
+client4persist.o:
+#  Implicit rule search has been done.
+#  File does not exist.
 #  File has not been updated.
+
+# Not a target:
+config.o:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-30 02:02:43.356417253
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+setup_ib.o:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-30 02:02:43.724397859
+#  File has been updated.
+#  Successfully updated.
 
 # Not a target:
 sock.o:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-27 13:41:41.908582084
+#  Last modified 2022-05-30 02:02:43.86439048
 #  File has been updated.
 #  Successfully updated.
 
 # files hash-table stats:
-# Load=17/1024=2%, Rehash=0, Collisions=2/42=5%
+# Load=19/1024=2%, Rehash=0, Collisions=2/46=4%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
- 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 45 / storage = 417 B / avg = 9 B
-# current buf: size = 8162 B / used = 417 B / count = 45 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 51 / storage = 519 B / avg = 10 B
+# current buf: size = 8162 B / used = 519 B / count = 51 / avg = 10 B
 
-# strcache performance: lookups = 60 / hit rate = 25%
+# strcache performance: lookups = 74 / hit rate = 31%
+ 
 # hash-table stats:
-# Load=45/8192=1%, Rehash=0, Collisions=4/60=7%
-# Finished Make data base on Sun May 29 06:31:52 2022
+# Load=51/8192=1%, Rehash=0, Collisions=5/74=7%
+# Finished Make data base on Mon May 30 02:04:22 2022
 
  
