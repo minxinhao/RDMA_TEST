@@ -31,3 +31,9 @@ Set it to 512 makes the ultimate performance to be approaching to perftest.
 
 1. ibv_poll_cq may return with zero cq polled.
 2. Remote Write will also generate wc into server's cq.
+
+
+### ibv_post_send
+
+1. When I test the latency of send, the result shows that the latency of send_with_imm is much higher than expected, compared to a single send.
+2. Overlap post_send with poll_cq will greatly improve the performance of RDMA.

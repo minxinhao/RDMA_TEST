@@ -48,6 +48,15 @@ void *server4lat_thread (void *arg)
     ret = post_send (0, lkey, 0, MSG_CTL_START, qp, buf_base); //set wr_id to 0 for start send wr
     check (ret == 0, "thread[%ld]: failed to signal the client to start", thread_id);
     while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
+    
+    // For testing send's latency, we should issue corresponding recv in server side.
+    for (j = 0; j < num_concurr_msgs; j++) {
+        ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
+        check(ret==0,"server post recv error");
+        buf_offset = (buf_offset + msg_size) % buf_size;
+        buf_ptr = buf_base + buf_offset;
+    }
+    
 
     // post recv for complete flag
     ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
@@ -56,8 +65,8 @@ void *server4lat_thread (void *arg)
     while (!stop){
         n=ibv_poll_cq (cq, num_wc, wc);        
         for(i = 0 ; i < n ; i++){
-            if(wc[i].opcode == IBV_WC_RECV){
-                check(ntohl(wc[i].imm_data) == MSG_CTL_STOP,"Expect to recv stop flag");
+            if(unlikely(ntohl(wc[i].imm_data) == MSG_CTL_STOP) && (wc[i].opcode == IBV_WC_RECV)){
+                // check(ntohl(wc[i].imm_data) == MSG_CTL_STOP,"Expect to recv stop flag");
                 stop = true;
                 break;
             }

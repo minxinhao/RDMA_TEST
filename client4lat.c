@@ -53,7 +53,7 @@ void *client4lat_thread_func (void *arg)
     while ((n=ibv_poll_cq (cq, num_wc, wc))==0){
         // log_message("poll empty cq for recv start");
     }
-    check(ntohl(wc[i].imm_data)==MSG_CTL_START,"Expect to recv START from client");
+    check(ntohl(wc[0].imm_data)==MSG_CTL_START,"Expect to recv START from client");
     log ("thread[%ld]: ready to send", thread_id);
 
     //Inital Latency Counter
@@ -66,21 +66,12 @@ void *client4lat_thread_func (void *arg)
     for(i = 0 ; i < num_concurr_msgs ; i++){
         wr_id = get_wr_id();
         // set_msg(buf_ptr,msg_size,wr_id%10);
-        ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+i*msg_size,qp, buf_ptr);
+        // ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+i*msg_size,qp, buf_ptr);
+        ret = post_send_woimm (msg_size, lkey, wr_id, qp, buf_ptr);
+        // ret = post_send (msg_size, lkey, wr_id,(uint32_t)wr_id, qp, buf_ptr);
         // check (ret == 0, "thread[%ld]: failed to post write", thread_id);
         while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
     }
-
-    /* wait for write complete */
-    // while (stop != true) {
-    //     n = ibv_poll_cq (cq, num_wc, wc);
-    //     for (i = 0; i < n; i++) {
-    //         if(unlikely(++ops_count>=num_concurr_msgs)){
-    //             stop = true;
-    //             break;
-    //         }
-    //     } 
-    // }
     
     gettimeofday(&end,NULL);
     long total = (end.tv_sec-start.tv_sec)*1000000 + end.tv_usec - start.tv_usec;

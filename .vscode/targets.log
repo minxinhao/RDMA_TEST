@@ -8,7 +8,7 @@ make: *** No rule to make target 'main.o', needed by 'rdma_test'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon May 30 10:23:20 2022
+# Make data base, printed on Mon May 30 12:25:02 2022
 
 # Variables
 
@@ -77,7 +77,8 @@ CPATH = /home/dsb/daos/install/include/:/home/dsb/daos/install/include/:
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/997/vscode-ipc-f3537adf-4e6a-4c09-8b6f-1b641074d5cd.sock
+ 
+VSCODE_IPC_HOOK_CLI = /run/user/997/vscode-ipc-d6733652-8f6c-4fbb-88d4-ca6628d05b11.sock
 # makefile (from 'Makefile', line 4)
 LDFLAGS = -libverbs
 # default
@@ -118,7 +119,6 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
 MAKELEVEL := 0
- 
 # default
 MAKE = $(MAKE_COMMAND)
 # default
@@ -155,6 +155,7 @@ MFLAGS = -pqrR
 SSH_CLIENT = 192.168.0.1 38578 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
+ 
 # environment
 BROWSER = /home/mxh/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/helpers/browser.sh
 # environment
@@ -177,7 +178,6 @@ LIBS = -lpthread -lrdmacm -lpmem
 SUFFIXES := 
 # environment
 MY_IO500_PATH = /home/dsb/io500
- 
 # environment
 DAOS_POOL = Pool1
 # default
@@ -193,6 +193,7 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 MOTD_SHOWN = pam
 # variable set hash-table stats:
+ 
 # Load=89/1024=9%, Rehash=0, Collisions=13/120=11%
 
 # Pattern-specific Variable Values
@@ -202,7 +203,6 @@ MOTD_SHOWN = pam
 # Directories
 
 # . (device 64768, inode 4514505): 40 files, no impossibilities.
- 
 
 # 40 files, no impossibilities in 1 directories.
 
@@ -217,6 +217,7 @@ server4persist.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 
 all: rdma_test
 #  Command line target.
@@ -234,12 +235,12 @@ client.o:
 client4write.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
+ 
 #  Last modified 2022-05-30 07:12:04.659845802
 #  File has been updated.
 #  Successfully updated.
@@ -267,6 +268,7 @@ server4write.o:
 
 .c.o:
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 17):
@@ -283,7 +285,6 @@ ib.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 
 # Not a target:
 client4lat.o:
@@ -297,10 +298,11 @@ clean:
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 24):
 	$(RM) *.o *~ $(PROG)
+ 
 
 rdma_test: main.o client.o config.o ib.o server.o setup_ib.o sock.o latency.o client4write.o server4write.o client4persist.o server4persist.o client4lat.o server4lat.o
 #  Implicit rule search has not been done.
-#  Last modified 2022-05-30 08:59:11.622042297
+#  Last modified 2022-05-30 11:26:05.346497098
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 20):
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
@@ -311,7 +313,6 @@ server4lat.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 
 # Not a target:
 latency.o:
@@ -324,6 +325,7 @@ main.o:
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has not been updated.
+ 
 
 # Not a target:
 client4persist.o:
@@ -341,7 +343,6 @@ config.o:
 setup_ib.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 
 # Not a target:
@@ -361,9 +362,10 @@ sock.o:
 # strcache buffers: 1 (0) / strings = 62 / storage = 647 B / avg = 10 B
 # current buf: size = 8162 B / used = 647 B / count = 62 / avg = 10 B
 
+ 
 # strcache performance: lookups = 77 / hit rate = 19%
 # hash-table stats:
 # Load=62/8192=1%, Rehash=0, Collisions=4/77=5%
-# Finished Make data base on Mon May 30 10:23:20 2022
+# Finished Make data base on Mon May 30 12:25:02 2022
 
  
