@@ -37,3 +37,4 @@ Set it to 512 makes the ultimate performance to be approaching to perftest.
 
 1. When I test the latency of send, the result shows that the latency of send_with_imm is much higher than expected, compared to a single send.
 2. Overlap post_send with poll_cq will greatly improve the performance of RDMA.
+3. We should gurantee correspondence bewteen client's send and server's recv when testing the latency of send.

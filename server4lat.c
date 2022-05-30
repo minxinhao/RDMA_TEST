@@ -55,6 +55,7 @@ void *server4lat_thread (void *arg)
         check(ret==0,"server post recv error");
         buf_offset = (buf_offset + msg_size) % buf_size;
         buf_ptr = buf_base + buf_offset;
+        while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
     }
     
 

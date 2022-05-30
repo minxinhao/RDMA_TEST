@@ -14,7 +14,7 @@ sock_port                 = 1111
 
 ************ Start of IB Config ************
 
-	qp[5819] <-> qp[566]
+	qp[5821] <-> qp[568]
 
 ************ End of IB Config ************
 
