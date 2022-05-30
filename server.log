@@ -6,15 +6,15 @@
 
 is_server                 = true
 msg_size                  = 64
-num_concurr_msgs          = 100
-sock_port                 = 1111
+num_concurr_msgs          = 1000
+sock_port                 = 5555
 
 ************ End of Configuraion ************
 
 
 ************ Start of IB Config ************
 
-	qp[5792] <-> qp[539]
+	qp[5806] <-> qp[553]
 
 ************ End of IB Config ************
 

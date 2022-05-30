@@ -68,19 +68,19 @@ void *client4lat_thread_func (void *arg)
         // set_msg(buf_ptr,msg_size,wr_id%10);
         ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+i*msg_size,qp, buf_ptr);
         // check (ret == 0, "thread[%ld]: failed to post write", thread_id);
+        while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
     }
 
     /* wait for write complete */
-    while (stop != true) {
-        n = ibv_poll_cq (cq, num_wc, wc);
-        for (i = 0; i < n; i++) {
-            if(unlikely(++ops_count>=num_concurr_msgs)){
-                gettimeofday (&end, NULL);
-                stop = true;
-                break;
-            }
-        } 
-    }
+    // while (stop != true) {
+    //     n = ibv_poll_cq (cq, num_wc, wc);
+    //     for (i = 0; i < n; i++) {
+    //         if(unlikely(++ops_count>=num_concurr_msgs)){
+    //             stop = true;
+    //             break;
+    //         }
+    //     } 
+    // }
     
     gettimeofday(&end,NULL);
     long total = (end.tv_sec-start.tv_sec)*1000000 + end.tv_usec - start.tv_usec;
