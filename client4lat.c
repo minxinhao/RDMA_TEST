@@ -74,12 +74,12 @@ void *client4lat_thread_func (void *arg)
         ret = post_raw (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
         // ret = post_send (msg_size, lkey, wr_id,(uint32_t)wr_id, qp, buf_ptr);
         // check (ret == 0, "thread[%ld]: failed to post write", thread_id);
-        while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
-        // while (true){
-        //     n=ibv_poll_cq (cq, num_wc, wc);
-        //     cnt+=n;
-        //     if(cnt==2)break;
-        // }
+        // while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
+        while (true){
+            n=ibv_poll_cq (cq, num_wc, wc);
+            cnt+=n;
+            if(cnt==1)break;
+        }
     }
     
     gettimeofday(&end,NULL);
@@ -89,9 +89,7 @@ void *client4lat_thread_func (void *arg)
     // send complete flag to server
 	ret = post_send (0, lkey, IB_WR_ID_STOP, MSG_CTL_STOP, qp, ib_res.ib_buf);
 	check (ret == 0, "thread[%ld]: failed to signal the client to stop", thread_id);
-    while ((n = ibv_poll_cq (cq, num_wc, wc))==0){
-        // log_message("poll empty cq for send stop");
-    }
+    while ((n = ibv_poll_cq (cq, num_wc, wc))==0){}
 
 
     free (wc);

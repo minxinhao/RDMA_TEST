@@ -22,7 +22,7 @@ int main (int argc, char *argv[])
 {
     int	ret = 0;
 
-    if (argc != 4) {
+    if (argc != 5) {
         printf ("Usage: %s Type:[server/client] ip_addre sock_port\n", argv[0]);
         return 0;
     }    
@@ -30,6 +30,7 @@ int main (int argc, char *argv[])
     config_info.is_server = !strcmp(argv[1],"server");
     config_info.ip_address = argv[2];
     config_info.sock_port = argv[3];
+    config_info.pmem_path = argv[4];
     config_info.num_concurr_msgs = 1000;
     config_info.msg_size = 64;
 

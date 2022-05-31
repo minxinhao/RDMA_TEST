@@ -1,12 +1,14 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <malloc.h>
+#include <libpmem.h>
 
 #include "sock.h"
 #include "ib.h"
 #include "debug.h"
 #include "config.h"
 #include "setup_ib.h"
+#include "NVM.h"
 
 struct IBRes ib_res;
 
@@ -165,6 +167,8 @@ int setup_ib ()
 {
     int	ret		         = 0;
     int i                        = 0;
+    uint64_t len_size;
+    int is_mem;
     struct ibv_device **dev_list = NULL;    
     memset (&ib_res, 0, sizeof(struct IBRes));
 
@@ -190,7 +194,9 @@ int setup_ib ()
     /* occupies the second half */
     /* assume all msgs are of the same content */
     ib_res.ib_buf_size = config_info.msg_size * config_info.num_concurr_msgs;
-    ib_res.ib_buf      = (char *) memalign (4096, ib_res.ib_buf_size);
+    // ib_res.ib_buf      = (char *) memalign (4096, ib_res.ib_buf_size);
+    ib_res.ib_buf = get_pmem_buf(ib_res.ib_buf_size);
+
     check (ib_res.ib_buf != NULL, "Failed to allocate ib_buf");
 
     ib_res.mr = ibv_reg_mr (ib_res.pd, (void *)ib_res.ib_buf,
@@ -286,6 +292,7 @@ void close_ib_connection ()
     }
 
     if (ib_res.ib_buf != NULL) {
-        free (ib_res.ib_buf);
+        // free (ib_res.ib_buf);
+        free_pmem_buf(ib_res.ib_buf);
     }
 }

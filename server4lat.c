@@ -50,13 +50,13 @@ void *server4lat_thread (void *arg)
     while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
     
     // For testing send's latency, we should issue corresponding recv in server side.
-    for (j = 0; j < num_concurr_msgs; j++) {
-        ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
-        check(ret==0,"server post recv error");
-        buf_offset = (buf_offset + msg_size) % buf_size;
-        buf_ptr = buf_base + buf_offset;
-        while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
-    }
+    // for (j = 0; j < num_concurr_msgs; j++) {
+    //     ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
+    //     check(ret==0,"server post recv error");
+    //     buf_offset = (buf_offset + msg_size) % buf_size;
+    //     buf_ptr = buf_base + buf_offset;
+    //     while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
+    // }
     
 
     // post recv for complete flag
@@ -73,12 +73,6 @@ void *server4lat_thread (void *arg)
             }
         }
     }
-
-    /* dump statistics */
-    // duration   = (double)((end.tv_sec - start.tv_sec) * 1000000 +
-    //                       (end.tv_usec - start.tv_usec));
-    // throughput = (double)(ops_count) / duration;
-    // log ("thread[%ld]: throughput = %f (Mops/s)",  thread_id, throughput);
 
     free (wc);
     pthread_exit ((void *)0);
