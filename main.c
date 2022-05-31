@@ -41,13 +41,13 @@ int main (int argc, char *argv[])
     if (config_info.is_server) {
         // ret = run_server ();
         // ret = run_server4write ();
-        // ret = run_server4persist ();
-        ret = run_server4lat ();
+        ret = run_server4persist ();
+        // ret = run_server4lat ();
     } else {
         // ret = run_client ();
         // ret = run_client4write ();
-        // ret = run_client4persist ();
-        ret = run_client4lat ();
+        ret = run_client4persist ();
+        // ret = run_client4lat ();
     }
     check (ret == 0, "Failed to run workload");
 

@@ -58,6 +58,8 @@ int connect_qp_server ()
     log_info("remote_addr: addr:%lx rkey:%u",remote_addr.remote_addr,remote_addr.rkey);
     ib_res.rkey = remote_addr.rkey;
     ib_res.remote_addr = remote_addr.remote_addr;
+    // ib_res.rkey = local_addr.rkey;
+    // ib_res.remote_addr = local_addr.remote_addr;
 
     /* change send QP state to RTS */
     log (LOG_SUB_HEADER, "Start of IB Config");

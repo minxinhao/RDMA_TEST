@@ -42,56 +42,47 @@ void *client4persist_thread_func (void *arg)
     double              duration	= 0.0;
     double              throughput	= 0.0;
 
-    /* pre-post recvs for start */    
+
     wc = (struct ibv_wc *) calloc (num_wc, sizeof(struct ibv_wc));
     check (wc != NULL, "thread[%ld]: failed to allocate wc.", thread_id);
     
-    // ret = post_srq_recv (msg_size, lkey, (uint64_t)buf_ptr, srq, buf_ptr);
-    // /* wait for start signal */
-    // while ((n=ibv_poll_cq (cq, num_wc, wc))==0){
-    //     // log_message("poll empty cq for recv start");
-    // }
-    // check(ntohl(wc[i].imm_data)==MSG_CTL_START,"Expect to recv START from client");
-    // log ("thread[%ld]: ready to send", thread_id);
+    /* pre-post recvs for start */    
+    ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
+    check(ret==0,"server post recv error");
+    while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
 
     /* write server */
     debug ("buf_ptr = %"PRIx64"", (uint64_t)buf_ptr);
     wr_id = get_wr_id();
     set_msg(buf_ptr,msg_size,wr_id%10);
-    // ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
     ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+msg_size,qp, buf_ptr);
     check (ret == 0, "thread[%ld]: failed to post write", thread_id);
-
-    /* wait for write complete */
-    while ((n=ibv_poll_cq (cq, num_wc, wc))==0){
-        // log_message("poll empty cq for recv start");
-    }
-
-    printf("Read from local-remote:%s\n",buf_ptr+msg_size);
-
-
-    // send complete flag to server
-	ret = post_send (0, lkey, IB_WR_ID_STOP, MSG_CTL_STOP, qp, ib_res.ib_buf);
-	check (ret == 0, "thread[%ld]: failed to signal the client to stop", thread_id);
-    while ((n = ibv_poll_cq (cq, num_wc, wc))==0){
-        // log_message("poll empty cq for send stop");
-    }
+    while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
+    
+    ret = post_send (0, lkey, 0, MSG_CTL_STOP, qp, buf_base); //set wr_id to 0 for start send wr
+    check (ret == 0, "thread[%ld]: failed to signal the client to start", thread_id);
+    while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
 
     // // send read to flush data
     // ret = post_read (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
-    ret = post_read (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+msg_size,qp, buf_ptr);
+    ret = post_read (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+msg_size,qp, buf_ptr+msg_size);
     check (ret == 0, "thread[%ld]: failed to post read", thread_id);
-    while ((n = ibv_poll_cq (cq, num_wc, wc))==0){
-        // log_message("poll empty cq for send stop");
-    }
-    printf("Read from remote:%s\n",buf_ptr);
+    while ((n = ibv_poll_cq (cq, num_wc, wc))==0){}
+    printf("Read from remote:%s\n",buf_ptr+msg_size);
 
-    // // send complete flag to server
-	// ret = post_send (0, lkey, IB_WR_ID_STOP, MSG_CTL_STOP, qp, ib_res.ib_buf);
-	// check (ret == 0, "thread[%ld]: failed to signal the client to stop", thread_id);
-    // while ((n = ibv_poll_cq (cq, num_wc, wc))==0){
-    //     // log_message("poll empty cq for send stop");
-    // }
+    wr_id = get_wr_id();
+    set_msg(buf_ptr+2*msg_size,msg_size,wr_id%10);
+    ret = post_raw (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+2*msg_size,qp, buf_ptr+2*msg_size);
+    printf("Read from remote:%s\n",buf_ptr+2*msg_size);
+
+    ret = post_send (0, lkey, 0, MSG_CTL_STOP, qp, buf_base); //set wr_id to 0 for start send wr
+    check (ret == 0, "thread[%ld]: failed to signal the client to start", thread_id);
+    while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
+
+    //recv stop
+    ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
+    check(ret==0,"server post recv error");
+    while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
 
     /* dump statistics */
     duration   = (double)((end.tv_sec - start.tv_sec) * 1000000 + 

@@ -43,58 +43,43 @@ void *server4persist_thread (void *arg)
 
     wc = (struct ibv_wc *) calloc (num_wc, sizeof(struct ibv_wc));
     check (wc != NULL, "thread[%ld]: failed to allocate wc.", thread_id);
-    
-    
 
-    /* signal the client to start */
-    // ret = post_send (0, lkey, 0, MSG_CTL_START, qp, buf_base); //set wr_id to 0 for start send wr
-    // check (ret == 0, "thread[%ld]: failed to signal the client to start", thread_id);
-    // while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
-    
+    ret = post_send (0, lkey, 0, MSG_CTL_START, qp, buf_base); //set wr_id to 0 for start send wr
+    while((n=ibv_poll_cq (cq, num_wc, wc))==0){}
 
-    //post recv for complete flag
-    // ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
-    // check(ret==0,"server post recv error");
+    // post recv for complete flag
+    ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
+    check(ret==0,"server post recv error");
+    while (!stop){
+        n=ibv_poll_cq (cq, num_wc, wc);
+        for(i = 0 ; i < n ; i++){
+            if(wc[i].opcode == IBV_WC_RECV){
+                check(ntohl(wc[i].imm_data) == MSG_CTL_STOP,"Expect to recv stop flag");
+                printf("The value read from buf is: str_len:%ld content:%s\n",strlen(buf_ptr+msg_size),buf_ptr+msg_size);
+                stop = true;
+                break;
+            }
+        }
+    }
 
-    // while (!stop){
-    //     // log_message("poll empty cq for recv start");
-    //     n=ibv_poll_cq (cq, num_wc, wc);
-        
-    //     for(i = 0 ; i < n ; i++){
-    //         if(wc[i].opcode == IBV_WC_RECV){
-    //             check(ntohl(wc[i].imm_data) == MSG_CTL_STOP,"Expect to recv stop flag");
-    //             // printf("The value read from buf is: str_len:%ld content:%s\n",strlen(buf_ptr),buf_ptr);
-    //             stop = true;
-    //             break;
-    //         }
-    //     }
-    // }
+    // post recv for complete flag
+    ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
+    check(ret==0,"server post recv error");
+    stop = false;
+    while (!stop){
+        n=ibv_poll_cq (cq, num_wc, wc);
+        for(i = 0 ; i < n ; i++){
+            if(wc[i].opcode == IBV_WC_RECV){
+                check(ntohl(wc[i].imm_data) == MSG_CTL_STOP,"Expect to recv stop flag");
+                printf("The value read from buf is: str_len:%ld content:%s\n",strlen(buf_ptr+2*msg_size),buf_ptr+2*msg_size);
+                stop = true;
+                break;
+            }
+        }
+    }
 
-    //post recv for complete flag
-    // ret = post_srq_recv (msg_size, lkey, get_wr_id(), srq, buf_ptr);
-    // check(ret==0,"server post recv error");
-    
-    // stop = false;
-    // while (!stop){
-    //     // log_message("poll empty cq for recv start");
-    //     n=ibv_poll_cq (cq, num_wc, wc);
-        
-    //     for(i = 0 ; i < n ; i++){
-    //         if(wc[i].opcode == IBV_WC_RECV){
-    //             check(ntohl(wc[i].imm_data) == MSG_CTL_STOP,"Expect to recv stop flag");
-    //             printf("The value read from buf is: str_len:%ld content:%s\n",strlen(buf_ptr),buf_ptr);
-    //             stop = true;
-    //             break;
-    //         }
-    //     }
-    // }
-
-    
-    /* dump statistics */
-    // duration   = (double)((end.tv_sec - start.tv_sec) * 1000000 +
-    //                       (end.tv_usec - start.tv_usec));
-    // throughput = (double)(ops_count) / duration;
-    // log ("thread[%ld]: throughput = %f (Mops/s)",  thread_id, throughput);
+    ret = post_send (0, lkey, 0, MSG_CTL_STOP, qp, buf_base); //set wr_id to 0 for start send wr
+    while((n=ibv_poll_cq (cq, num_wc, wc))==0){}
 
     free (wc);
     pthread_exit ((void *)0);

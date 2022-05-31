@@ -178,6 +178,52 @@ int post_read(uint32_t req_size, uint32_t lkey, uint64_t wr_id,
     return ret;
 }
 
+//post read after write for the same address to flush the data
+int post_raw(uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
+	       uint32_t imm_data, uint32_t rkey, uint64_t remote_addr ,struct ibv_qp *qp, char *buf){
+    int ret = 0;
+    struct ibv_send_wr *bad_send_wr;
+    
+    struct ibv_sge write_sge = {
+	.addr   = (uintptr_t) buf,
+	.length = req_size,
+	.lkey   = lkey
+    };
+
+    struct ibv_send_wr write_wr = {
+	.wr_id      = wr_id,
+	.sg_list    = &write_sge,
+	.num_sge    = 1,
+	.opcode     = IBV_WR_RDMA_WRITE,
+	.send_flags = IBV_SEND_SIGNALED,
+	.imm_data   = htonl (imm_data),
+    };
+	write_wr.wr.rdma.rkey = rkey;
+	write_wr.wr.rdma.remote_addr = remote_addr;
+
+    struct ibv_sge read_sge = {
+	.addr   = (uintptr_t) buf,
+	.length = req_size,
+	.lkey   = lkey
+    };
+
+    struct ibv_send_wr read_wr = {
+	.wr_id      = wr_id,
+	.sg_list    = &read_sge,
+	.num_sge    = 1,
+	.opcode     = IBV_WR_RDMA_READ,
+	.send_flags = IBV_SEND_SIGNALED,
+	.imm_data   = htonl (imm_data),
+    };
+	read_wr.wr.rdma.rkey = rkey;
+	read_wr.wr.rdma.remote_addr = remote_addr;
+
+	write_wr.next = &read_wr;
+
+    ret = ibv_post_send (qp, &write_wr, &bad_send_wr);
+    return ret;
+}
+
 int post_srq_recv (uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
 		   struct ibv_srq *srq, char *buf)
 {
