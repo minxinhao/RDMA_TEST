@@ -143,7 +143,6 @@ int post_write (uint32_t req_size, uint32_t lkey, uint64_t wr_id,
 	.num_sge    = 1,
 	.opcode     = IBV_WR_RDMA_WRITE,
 	.send_flags = IBV_SEND_SIGNALED,
-	.imm_data   = htonl (imm_data),
     };
 	send_wr.wr.rdma.rkey = rkey;
 	send_wr.wr.rdma.remote_addr = remote_addr;
