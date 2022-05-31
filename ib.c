@@ -195,8 +195,7 @@ int post_raw(uint32_t req_size, uint32_t lkey, uint64_t wr_id,
 	.sg_list    = &write_sge,
 	.num_sge    = 1,
 	.opcode     = IBV_WR_RDMA_WRITE,
-	.send_flags = IBV_SEND_SIGNALED,
-	.imm_data   = htonl (imm_data),
+	// .send_flags = IBV_SEND_SIGNALED,
     };
 	write_wr.wr.rdma.rkey = rkey;
 	write_wr.wr.rdma.remote_addr = remote_addr;
@@ -213,7 +212,6 @@ int post_raw(uint32_t req_size, uint32_t lkey, uint64_t wr_id,
 	.num_sge    = 1,
 	.opcode     = IBV_WR_RDMA_READ,
 	.send_flags = IBV_SEND_SIGNALED,
-	.imm_data   = htonl (imm_data),
     };
 	read_wr.wr.rdma.rkey = rkey;
 	read_wr.wr.rdma.remote_addr = remote_addr;
