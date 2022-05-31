@@ -202,7 +202,7 @@ int post_raw(uint32_t req_size, uint32_t lkey, uint64_t wr_id,
 	write_wr.wr.rdma.remote_addr = remote_addr;
 
     struct ibv_sge read_sge = {
-	.addr   = (uintptr_t) buf,
+	.addr   = (uintptr_t) (buf+req_size),
 	.length = req_size,
 	.lkey   = lkey
     };

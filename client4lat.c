@@ -63,14 +63,23 @@ void *client4lat_thread_func (void *arg)
     gettimeofday(&start,NULL);
     
     /* write server */
+    int cnt = 0 ;
     for(i = 0 ; i < num_concurr_msgs ; i++){
+        cnt = 0 ;
         wr_id = get_wr_id();
         // set_msg(buf_ptr,msg_size,wr_id%10);
-        // ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+i*msg_size,qp, buf_ptr);
-        ret = post_send_woimm (msg_size, lkey, wr_id, qp, buf_ptr);
+        ret = post_write(msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
+        ret = post_read(msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr+msg_size);
+        // ret = post_send_woimm (msg_size, lkey, wr_id, qp, buf_ptr);
+        // ret = post_raw (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
         // ret = post_send (msg_size, lkey, wr_id,(uint32_t)wr_id, qp, buf_ptr);
         // check (ret == 0, "thread[%ld]: failed to post write", thread_id);
-        while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
+        // while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
+        while (true){
+            n=ibv_poll_cq (cq, num_wc, wc);
+            cnt+=n;
+            if(cnt==2)break;
+        }
     }
     
     gettimeofday(&end,NULL);
