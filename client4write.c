@@ -110,6 +110,7 @@ void *client4write_thread_func (void *arg)
     printf("total:%lf duration:%lf\n",tmp,duration);
     throughput = tmp / duration;
     // log ("thread[%ld]: throughput = %f (Mops/s)",  thread_id, throughput);
+    printf ("thread[%ld]: throughput = %f (MB/s)\n",  thread_id, throughput);
     log ("thread[%ld]: throughput = %f (MB/s)",  thread_id, throughput);
 
     free (wc);

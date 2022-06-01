@@ -6,6 +6,7 @@
 #define MAX_POST_LIST 2048
 
 uint64_t wr_id_cnt;
+uint64_t wr_offset;
 struct ibv_sge write_sge_arr[MAX_POST_LIST+1];
 struct ibv_send_wr send_wr_arr[MAX_POST_LIST+1];
 
@@ -255,23 +256,25 @@ int post_write_batch(uint32_t batch_size,uint32_t req_size, uint32_t lkey, uint6
     int ret = 0;
     struct ibv_send_wr *bad_send_wr;
 
+	uint64_t old_offset = wr_offset;
 	for(uint32_t i = 0 ; i < batch_size ; i++){
-		write_sge_arr[i].addr = (uintptr_t) buf+i*req_size;
-		write_sge_arr[i].length = req_size;
-		write_sge_arr[i].lkey = lkey;
+		write_sge_arr[wr_offset].addr = (uintptr_t) buf+i*req_size;
+		write_sge_arr[wr_offset].length = req_size;
+		write_sge_arr[wr_offset].lkey = lkey;
 
-		send_wr_arr[i].wr_id = wr_id;
-		send_wr_arr[i].sg_list = &write_sge_arr[i];
-		send_wr_arr[i].num_sge = 1;
-		send_wr_arr[i].opcode = IBV_WR_RDMA_WRITE;
-		send_wr_arr[i].wr.rdma.rkey = rkey;
-		send_wr_arr[i].wr.rdma.remote_addr = remote_addr+i*req_size;
-		send_wr_arr[i].next = &send_wr_arr[i+1];
+		send_wr_arr[wr_offset].wr_id = wr_id;
+		send_wr_arr[wr_offset].sg_list = &write_sge_arr[wr_offset];
+		send_wr_arr[wr_offset].num_sge = 1;
+		send_wr_arr[wr_offset].opcode = IBV_WR_RDMA_WRITE;
+		send_wr_arr[wr_offset].wr.rdma.rkey = rkey;
+		send_wr_arr[wr_offset].wr.rdma.remote_addr = remote_addr+i*req_size;
+		send_wr_arr[wr_offset].next = &send_wr_arr[wr_offset+1];
+		wr_offset = (wr_offset+1)%MAX_POST_LIST;
 	}
 	// the last one should be signaled
-	send_wr_arr[batch_size-1].send_flags = IBV_SEND_SIGNALED;
-	send_wr_arr[batch_size-1].next = NULL;
+	send_wr_arr[old_offset+batch_size-1].send_flags = IBV_SEND_SIGNALED;
+	send_wr_arr[old_offset+batch_size-1].next = NULL;
 
-    ret = ibv_post_send (qp, &send_wr_arr[0], &bad_send_wr);
+    ret = ibv_post_send (qp, &send_wr_arr[old_offset], &bad_send_wr);
     return ret;
 }

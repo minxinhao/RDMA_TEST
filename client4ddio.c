@@ -16,7 +16,7 @@ void *client4ddio_thread_func (void *arg)
     long	thread_id	 = (long) arg;
     int         msg_size	 = config_info.msg_size;
     int         num_concurr_msgs = config_info.num_concurr_msgs;
-    uint32_t    batch_size = 2;
+    uint32_t    batch_size = 64;
 
     pthread_t   self;
     cpu_set_t   cpuset;
@@ -53,34 +53,39 @@ void *client4ddio_thread_func (void *arg)
     while ((n = ibv_poll_cq (cq, num_wc, wc))==0) {}
     log ("thread[%ld]: ready to send", thread_id);
 
-    gettimeofday(&start,NULL);
 
     buf_offset = 0;
     debug ("buf_ptr = %"PRIx64"", (uint64_t)buf_ptr);
-    for (j = 0; j < num_concurr_msgs/msg_size; j++) {
+    for (j = 0; j < num_concurr_msgs/batch_size; j++) {
         wr_id = get_wr_id();
-        set_msg(buf_ptr,msg_size,wr_id%10);
+        // set_msg(buf_ptr,msg_size,wr_id%10);
+        // ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+msg_size,qp, buf_ptr);
         ret = post_write_batch (batch_size,msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+msg_size,qp, buf_ptr);
-        check (ret == 0, "thread[%ld]: failed to post send", thread_id);
+        // check (ret == 0, "thread[%ld]: failed to post send", thread_id);
         buf_offset = (buf_offset + batch_size*msg_size) % buf_size;
         buf_ptr = buf_base + buf_offset;
     }
-    while(ops_count<(TOT_NUM_OPS/batch_size)){
+    while(!stop){
         n = ibv_poll_cq (cq, num_wc, wc);
         for(i = 0 ; i < n ;i++){
-            ops_count++;
+            if(unlikely(++ops_count>=(TOT_NUM_OPS/batch_size))){
+                gettimeofday (&end, NULL);
+                stop = true;
+                break;
+            }
+            if (unlikely(ops_count == (NUM_WARMING_UP_OPS/batch_size))) gettimeofday (&start, NULL);
             wr_id = get_wr_id();
-            set_msg(buf_ptr,msg_size,wr_id%10);
+            // set_msg(buf_ptr,msg_size,wr_id%10);
+            // ret = post_write (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+msg_size,qp, buf_ptr);
             ret = post_write_batch (batch_size,msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr+msg_size,qp, buf_ptr);
-            check (ret == 0, "thread[%ld]: failed to post send", thread_id);
+            // check (ret == 0, "thread[%ld]: failed to post send", thread_id);
             buf_offset = (buf_offset + batch_size*msg_size) % buf_size;
             buf_ptr = buf_base + buf_offset;
         }
 
     }
     
-    gettimeofday(&end,NULL);
-        // send complete flag to server
+    // send complete flag to server
 	ret = post_send (0, lkey, IB_WR_ID_STOP, MSG_CTL_STOP, qp, ib_res.ib_buf);
 	check (ret == 0, "thread[%ld]: failed to signal the client to stop", thread_id);
     while ((n = ibv_poll_cq (cq, num_wc, wc))==0){}
@@ -126,18 +131,18 @@ int run_client4ddio ()
     check (client_threads != NULL, "Failed to allocate client_threads.");
 
     for (i = 0; i < num_threads; i++) {
-	ret = pthread_create (&client_threads[i], &attr, 
-			      client4ddio_thread_func, (void *)i);
-	check (ret == 0, "Failed to create client_thread[%ld]", i);
+        ret = pthread_create (&client_threads[i], &attr, 
+                    client4ddio_thread_func, (void *)i);
+        check (ret == 0, "Failed to create client_thread[%ld]", i);
     }
 
     bool thread_ret_normally = true;
     for (i = 0; i < num_threads; i++) {
-	ret = pthread_join (client_threads[i], &status);
-	check (ret == 0, "Failed to join client_thread[%ld].", i);
-	if ((long)status != 0) {
-            thread_ret_normally = false;
-            log ("thread[%ld]: failed to execute", i);
+        ret = pthread_join (client_threads[i], &status);
+        check (ret == 0, "Failed to join client_thread[%ld].", i);
+        if ((long)status != 0) {
+                thread_ret_normally = false;
+                log ("thread[%ld]: failed to execute", i);
         }
     }
 
