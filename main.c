@@ -12,6 +12,8 @@
 #include "server4persist.h"
 #include "client4lat.h"
 #include "server4lat.h"
+#include "client4ddio.h"
+#include "server4ddio.h"
 
 FILE	*log_fp	     = NULL;
 
@@ -23,7 +25,7 @@ int main (int argc, char *argv[])
     int	ret = 0;
 
     if (argc != 5) {
-        printf ("Usage: %s Type:[server/client] ip_addre sock_port\n", argv[0]);
+        printf ("Usage: %s Type:[server/client] ip_addre sock_port pm_path\n", argv[0]);
         return 0;
     }    
 
@@ -43,12 +45,14 @@ int main (int argc, char *argv[])
         // ret = run_server ();
         // ret = run_server4write ();
         // ret = run_server4persist ();
-        ret = run_server4lat ();
+        // ret = run_server4lat ();
+        ret = run_server4ddio ();
     } else {
         // ret = run_client ();
         // ret = run_client4write ();
         // ret = run_client4persist ();
-        ret = run_client4lat ();
+        // ret = run_client4lat ();
+        ret = run_client4ddio ();
     }
     check (ret == 0, "Failed to run workload");
 

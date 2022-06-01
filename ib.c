@@ -3,7 +3,11 @@
 
 #include "ib.h"
 #include "debug.h"
+#define MAX_POST_LIST 2048
+
 uint64_t wr_id_cnt;
+struct ibv_sge write_sge_arr[MAX_POST_LIST+1];
+struct ibv_send_wr send_wr_arr[MAX_POST_LIST+1];
 
 uint64_t get_wr_id(){
     return ++wr_id_cnt;
@@ -240,5 +244,34 @@ int post_srq_recv (uint32_t req_size, uint32_t lkey, uint64_t wr_id,
     };
 
     ret = ibv_post_srq_recv (srq, &recv_wr, &bad_recv_wr);
+    return ret;
+}
+
+
+// post n wr per-batch in s post-list 
+// batch_size shoule below MAX_POST_LIST
+int post_write_batch(uint32_t batch_size,uint32_t req_size, uint32_t lkey, uint64_t wr_id, 
+	       uint32_t imm_data, uint32_t rkey, uint64_t remote_addr ,struct ibv_qp *qp, char *buf){
+    int ret = 0;
+    struct ibv_send_wr *bad_send_wr;
+
+	for(uint32_t i = 0 ; i < batch_size ; i++){
+		write_sge_arr[i].addr = (uintptr_t) buf+i*req_size;
+		write_sge_arr[i].length = req_size;
+		write_sge_arr[i].lkey = lkey;
+
+		send_wr_arr[i].wr_id = wr_id;
+		send_wr_arr[i].sg_list = &write_sge_arr[i];
+		send_wr_arr[i].num_sge = 1;
+		send_wr_arr[i].opcode = IBV_WR_RDMA_WRITE;
+		send_wr_arr[i].wr.rdma.rkey = rkey;
+		send_wr_arr[i].wr.rdma.remote_addr = remote_addr+i*req_size;
+		send_wr_arr[i].next = &send_wr_arr[i+1];
+	}
+	// the last one should be signaled
+	send_wr_arr[batch_size-1].send_flags = IBV_SEND_SIGNALED;
+	send_wr_arr[batch_size-1].next = NULL;
+
+    ret = ibv_post_send (qp, &send_wr_arr[0], &bad_send_wr);
     return ret;
 }
