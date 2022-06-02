@@ -75,7 +75,8 @@ void *client_thread_func (void *arg)
 	for (j = 0; j < num_concurr_msgs; j++) {
         wr_id = get_wr_id();
         set_msg(buf_ptr,msg_size,wr_id%10);
-	    ret = post_send (msg_size, lkey, wr_id , (uint32_t)i, qp, buf_ptr);
+	    // ret = post_send (msg_size, lkey, wr_id , (uint32_t)i, qp, buf_ptr);
+	    ret = post_send_woimm (msg_size, lkey, wr_id , qp, buf_ptr);
 	    check (ret == 0, "thread[%ld]: failed to post send", thread_id);
 	    buf_offset = (buf_offset + msg_size) % buf_size;
 	    buf_ptr = buf_base + buf_offset;
@@ -104,7 +105,8 @@ void *client_thread_func (void *arg)
 
             wr_id = get_wr_id();
             // set_msg(buf_ptr,msg_size,wr_id%10);
-            ret = post_send (msg_size, lkey, wr_id, wr_id, qp, buf_ptr);
+            // ret = post_send (msg_size, lkey, wr_id, wr_id, qp, buf_ptr);
+            ret = post_send_woimm (msg_size, lkey, wr_id, qp, buf_ptr);
             // check(ret==0,"Client send error");
             buf_offset = (buf_offset + msg_size) % buf_size;
             buf_ptr = buf_base + buf_offset;
@@ -120,6 +122,7 @@ void *client_thread_func (void *arg)
     printf("total:%lf duration:%lf\n",tmp,duration);
     throughput = tmp / duration;
     // log ("thread[%ld]: throughput = %f (Mops/s)",  thread_id, throughput);
+    printf("thread[%ld]: throughput = %f (MB/s)\n",  thread_id, throughput);
     log ("thread[%ld]: throughput = %f (MB/s)",  thread_id, throughput);
 
     free (wc);

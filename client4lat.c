@@ -71,14 +71,17 @@ void *client4lat_thread_func (void *arg)
         // ret = post_write(msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
         // ret = post_read(msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr+msg_size);
         // ret = post_send_woimm (msg_size, lkey, wr_id, qp, buf_ptr);
-        ret = post_raw (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
-        // ret = post_send (msg_size, lkey, wr_id,(uint32_t)wr_id, qp, buf_ptr);
-        // check (ret == 0, "thread[%ld]: failed to post write", thread_id);
+        // ret = post_raw (msg_size, lkey, wr_id , (uint32_t)wr_id, ib_res.rkey,ib_res.remote_addr,qp, buf_ptr);
+        ret = post_send (msg_size, lkey, wr_id,0, qp, buf_ptr);
+        check (ret == 0, "thread[%ld]: failed to post write", thread_id);
         // while ((n=ibv_poll_cq (cq, num_wc, wc))==0){}
         while (true){
             n=ibv_poll_cq (cq, num_wc, wc);
             cnt+=n;
-            if(cnt==1)break;
+            if(cnt==1){
+                check(wc[0].status == IBV_WC_SUCCESS,"Client fail to send:%d",wc[0].status);
+                break;
+            }
         }
     }
     

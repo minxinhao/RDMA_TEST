@@ -4,7 +4,6 @@ gcc -O2  -c -o main.o main.c
  
 gcc -O2  -c -o client.o client.c
 gcc -O2  -c -o config.o config.c
- 
 gcc -O2  -c -o ib.o ib.c
  
 gcc -O2  -c -o server.o server.c
